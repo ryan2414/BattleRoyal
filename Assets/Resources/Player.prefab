@@ -123,7 +123,7 @@ CapsuleCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -0.07, y: 0}
+  m_Offset: {x: 0.01, y: 0}
   m_Size: {x: 0.5, y: 0.85}
   m_Direction: 0
 --- !u!114 &7333273143405539017
@@ -143,7 +143,7 @@ MonoBehaviour:
   prefixField: -1
   Synchronization: 3
   OwnershipTransfer: 0
-  observableSearch: 0
+  observableSearch: 2
   ObservedComponents:
   - {fileID: 6917579049012398567}
   - {fileID: 5706589741500342571}
@@ -167,8 +167,20 @@ MonoBehaviour:
   ShowParameterInspector: 1
   m_SynchronizeParameters:
   - Type: 4
-    SynchronizeType: 0
+    SynchronizeType: 1
     Name: isWalk
+  - Type: 4
+    SynchronizeType: 1
+    Name: isJump
+  - Type: 4
+    SynchronizeType: 1
+    Name: attack
+  - Type: 9
+    SynchronizeType: 1
+    Name: doAttack
+  - Type: 9
+    SynchronizeType: 1
+    Name: doTouch
   m_SynchronizeLayers:
   - SynchronizeType: 0
     LayerIndex: 0
@@ -207,6 +219,7 @@ MonoBehaviour:
   rig: {fileID: 1308675516934583566}
   bulletFactory: {fileID: 7028639751483492254, guid: 82ced5f6c4af6324b8454d59713b7dbd,
     type: 3}
+  healthImage: {fileID: 8155492807109974744}
 --- !u!95 &6025351977656840383
 Animator:
   serializedVersion: 3

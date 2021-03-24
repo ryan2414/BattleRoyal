@@ -380,9 +380,10 @@ GameObject:
   - component: {fileID: 820455252}
   - component: {fileID: 820455251}
   - component: {fileID: 820455253}
+  - component: {fileID: 820455254}
   m_Layer: 8
   m_Name: Tilemap
-  m_TagString: Untagged
+  m_TagString: Ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1578,6 +1579,27 @@ TilemapCollider2D:
   m_Offset: {x: 0, y: 0}
   m_MaximumTileChangeCount: 1000
   m_ExtrusionFactor: 0.00001
+--- !u!50 &820455254
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 820455249}
+  m_BodyType: 1
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 1
+  m_Material: {fileID: 0}
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0
 --- !u!1 &829165807
 GameObject:
   m_ObjectHideFlags: 0
@@ -2389,7 +2411,7 @@ GameObject:
   - component: {fileID: 2535903170844470905}
   - component: {fileID: 2535903170844470906}
   - component: {fileID: 2535903170844470907}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: QuadForground (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2508,7 +2530,7 @@ GameObject:
   - component: {fileID: 2535903170909815902}
   - component: {fileID: 2535903170909815903}
   - component: {fileID: 2535903170909815896}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: QuadFarBackground (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2630,7 +2652,7 @@ GameObject:
   - component: {fileID: 2535903171588986471}
   - component: {fileID: 2535903171588986464}
   - component: {fileID: 2535903171588986465}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: QuadMidground (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2696,7 +2718,7 @@ GameObject:
   - component: {fileID: 2535903171932667562}
   - component: {fileID: 2535903171932667563}
   - component: {fileID: 2535903171932667556}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: QuadMidground
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2752,7 +2774,7 @@ GameObject:
   - component: {fileID: 2535903172140122257}
   - component: {fileID: 2535903172140122258}
   - component: {fileID: 2535903172140122259}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: QuadForground
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2900,7 +2922,7 @@ GameObject:
   - component: {fileID: 2535903172202736683}
   - component: {fileID: 2535903172202736676}
   - component: {fileID: 2535903172202736677}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: QuadFarBackground
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2956,7 +2978,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3535614305990897702}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Background
   m_TagString: Untagged
   m_Icon: {fileID: 0}
