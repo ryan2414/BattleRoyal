@@ -10,18 +10,20 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable {
     public PhotonView pv;
     public Text nickNameTxt;
     public Text killCountTxt;
+    public Text FinishKillCountTxt;
     public SpriteRenderer sr;
     public Animator anim;
     public Rigidbody2D rig;
     public GameObject bulletFactory;
     public Image healthImage;
     public int killCount;
-
+    public float attackCoolTime = 1.2f;
 
     Vector3 curPos;
 
     bool isGround;
     bool isFire;
+    float curTime;
 
     private void Awake() {
         //NickName 설정
@@ -33,23 +35,28 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable {
             cm.Follow = transform;
             cm.LookAt = transform;
         }
-
+        isFire = false;
     }
 
     void Update() {
+        if (pv.IsMine) {
+            killCountTxt.text = $"Kill : {killCount}";
+            curTime += Time.deltaTime;
 
-        killCountTxt.text = $"Kill : {killCount}";
-        if (pv.IsMine && !isFire) {
-
-            //만약 공격 중이 아니라면 움직일 수 있다
-            Move();
-            Jump();
-            //바닥에 닿아 있을 때에만 공격이 가능하다
-            if (isGround)
+            if (!isFire) {
+                //만약 공격 중이 아니라면 움직일 수 있다
+                Move();
+                Jump();
                 Attack();
-        }
+            }
 
+            //공격 쿨타임
+            if (curTime >= attackCoolTime) {
+                DoStop();
+            }
+        }
     }
+
     void Move() {
         //좌우 이동
         float axis = Input.GetAxisRaw("Horizontal");
@@ -75,54 +82,54 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable {
     }
 
     void Attack() {
-        if (Input.GetKeyDown(KeyCode.Space)) {
+        if (Input.GetKeyDown(KeyCode.Space) && isGround) {
             //공격 중일 때에는 움직이지 못하게 하고 싶다.
             rig.velocity = Vector2.zero;
-
+            curTime = 0;
             isFire = true;
 
-            anim.SetTrigger("doAttack");
-
+            anim.SetBool("isAttack", true);
             GameObject bullet = PhotonNetwork.Instantiate("Bullet", transform.position + new Vector3(sr.flipX ? -0.4f : 0.4f, -0.01f, 0), Quaternion.identity);
             bullet.GetComponent<PhotonView>().RPC("DirRPC", RpcTarget.All, sr.flipX ? -1 : 1);
-
-            Invoke("Break", 1.4f);
+            bullet.GetComponent<PhotonView>().RPC("Setowner", RpcTarget.All);
         }
+       
 
     }
-    void Break() {
-        isFire = false;
-    }
 
-
-    public void AnimStop() {
-        anim.SetTrigger("doTouch");
-        isFire = false;
-    }
-
-    //남의 총알에 맞고 죽었다. 
-    //죽었을 때
-    //누구에게 죽었는지 확인하고 싶다.
-    //총알 주인의 킬 카운트를 올려 주고 싶다. 
     public void Hit() {
         healthImage.fillAmount -= 0.1f;
-      
     }
 
 
     public void Die() {
-
-        if (healthImage.fillAmount <= 0) {
-            GameObject.Find("Canvas").transform.Find("RespawnPanel").gameObject.SetActive(true);
-            pv.RPC("DestoryRPC", RpcTarget.AllBuffered);
-
-        }
+        //오브젝트 터지는 애니메이션
+        PhotonNetwork.Instantiate("FX_Explosion", transform.position, Quaternion.identity);
+        //리스폰 판넬 생성
+        GameObject rewpawnPanel = GameObject.Find("Canvas").transform.Find("RespawnPanel").gameObject;
+        rewpawnPanel.SetActive(true);
+        rewpawnPanel.transform.Find("KillCountTxt").GetComponent<Text>().text = $"Kill : {killCount}";
+        //오즈젝트 삭제
+        pv.RPC("DestoryRPC", RpcTarget.AllBuffered);
     }
+
+    public void DoStop() {
+        anim.SetBool("isAttack", false);
+        isFire = false;
+    }
+
+    #region PunRPC
+    [PunRPC]
+    void DoAttack() {
+        //anim.SetTrigger("doAttack"); 
+        anim.SetBool("isAttack", true);
+    }
+
     [PunRPC]
     void KillCount() {
         killCount++;
     }
-    
+
     [PunRPC]
     void DestoryRPC() {
         Destroy(gameObject);
@@ -137,18 +144,18 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable {
     void JumpRPC() {
         rig.velocity = Vector2.zero;
         rig.AddForce(Vector2.up * 400);
-
     }
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info) {
         if (stream.IsWriting) {
             stream.SendNext(transform.position);
-            //stream.SendNext(killCount);
+            stream.SendNext(killCount);
             stream.SendNext(healthImage.fillAmount);
         } else {
             curPos = (Vector3)stream.ReceiveNext();
-            //killCount = (int)stream.ReceiveNext();
+            killCount = (int)stream.ReceiveNext();
             healthImage.fillAmount = (float)stream.ReceiveNext();
         }
     }
+    #endregion
 }

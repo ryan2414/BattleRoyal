@@ -97,11 +97,18 @@ public class NetworkManager : MonoBehaviourPunCallbacks {
         stateTxt.text = "방이 매칭됨 : 게임이 시작 됩니다.";
 
         startPanel.SetActive(false);
+        StartCoroutine("DestoryBullet");
         Spawn();
 
-        //게임씬을 호출함. loadLevel을 사용하여 방에 있는 모든 멤버가 같은 화면을 공유할 수 있도록 처리
-        //PhotonNetwork.LoadLevel("Game");
     }
+
+    IEnumerator DestoryBullet() {
+        yield return new WaitForSeconds(0.2f);
+        foreach(GameObject bullet in GameObject.FindGameObjectsWithTag("Bullet")) {
+            bullet.GetComponent<PhotonView>().RPC("DestoryRPC", RpcTarget.AllBuffered);
+        }
+    }
+
 
     //(빈 방이 없어)랜덤 룸 참가에 실패한 경우 자동 실행
     public override void OnJoinRandomFailed(short returnCode, string message) {

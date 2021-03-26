@@ -13,56 +13,63 @@ public class Bullet : MonoBehaviourPunCallbacks {
     int dir;
     public float speed;
     public PhotonView pv;
+    public Player owner;
 
     private void Start() {
         Destroy(gameObject, 1f);
-       
     }
+
     float curTime;
 
     private void Update() {
         curTime += Time.deltaTime;
-        if(curTime >= 0.1f) {
+
+        if (curTime >= 0.1f) {
             //스케일이 점점 커진다
             gameObject.transform.localScale += new Vector3(0.1f, 0.1f, 0);
             curTime = 0;
         }
-        
+
         //일정 방향으로 움직인다
         transform.Translate(Vector2.right * speed * Time.deltaTime * dir);
 
     }
 
     private void OnTriggerEnter2D(Collider2D other) {
-        //플레이어의 정보를 가져온다.
-        if (other.tag == "Player"||other.tag == "Ground") {
-            GameObject.FindGameObjectWithTag("Player").GetComponent<Player>().AnimStop();//플레이어의 애니메이션을 멈추고 싶다.
-               
-            if (!pv.IsMine && other.tag == "Player" && other.GetComponent<PhotonView>().Owner.UserId != pv.Owner.UserId  ) {
-                other.GetComponent<Player>().Hit();
-                if(other.GetComponent<Player>().healthImage.fillAmount <= 0) {
-                    //StartCoroutine(sldkfj());
-                    
-                    foreach (GameObject player in GameObject.FindGameObjectsWithTag("Player")) {
-                        //킬 카운트 올리기
-                        if (player.GetComponent<PhotonView>().Owner.ActorNumber == pv.Owner.ActorNumber) {
-                            print("레벨업");
-                            player.GetComponent<PhotonView>().RPC("KillCount", RpcTarget.AllBuffered);
-
-                        }
-                    }
-                    //플레이어 죽음
-                   other.GetComponent<Player>().Die();
-                }
+        if (!pv.IsMine && other.tag == "Player" && other.GetComponent<PhotonView>().Owner.UserId != pv.Owner.UserId) {
+            //플레이어 죽음
+            if (other.GetComponent<Player>().healthImage.fillAmount <= 0) {
+                owner.GetComponent<PhotonView>().RPC("KillCount", RpcTarget.AllBuffered);
+                other.GetComponent<Player>().Die();
             }
+            //플레이어 데미지
+            other.GetComponent<Player>().Hit();
             //총알을 파괴하고
-            pv.RPC("DestoryRPC",RpcTarget.AllBuffered); 
+            pv.RPC("DestoryRPC", RpcTarget.AllBuffered);
+        } else if(other.tag == "Ground") {
+            //총알을 파괴하고
+            pv.RPC("DestoryRPC", RpcTarget.AllBuffered);
         }
 
     }
 
     [PunRPC]
-    void DestoryRPC() => Destroy(gameObject);
+    void Setowner() {
+        //총알의 주인 정보 가져오기
+        foreach (GameObject player in GameObject.FindGameObjectsWithTag("Player")) {
+            if (player.GetComponent<PhotonView>().Owner.ActorNumber == pv.Owner.ActorNumber) {
+                owner = player.GetComponent<Player>();
+            }
+        }
+    }
+
+    [PunRPC]
+    void DestoryRPC() {
+        //플레이어 애니메이션 멈추기
+        owner.GetComponent<Player>().DoStop();
+
+        Destroy(gameObject);
+    }
 
     [PunRPC]
     void DirRPC(int dir) => this.dir = dir;
