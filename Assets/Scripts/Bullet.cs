@@ -44,9 +44,13 @@ public class Bullet : MonoBehaviourPunCallbacks {
             }
             //플레이어 데미지
             other.GetComponent<Player>().Hit();
+            //플레이어 애니메이션 멈추기
+            owner.GetComponent<Player>().DoStop();
             //총알을 파괴하고
             pv.RPC("DestoryRPC", RpcTarget.AllBuffered);
         } else if(other.tag == "Ground") {
+            //플레이어 애니메이션 멈추기
+            owner.GetComponent<Player>().DoStop();
             //총알을 파괴하고
             pv.RPC("DestoryRPC", RpcTarget.AllBuffered);
         }
@@ -65,9 +69,7 @@ public class Bullet : MonoBehaviourPunCallbacks {
 
     [PunRPC]
     void DestoryRPC() {
-        //플레이어 애니메이션 멈추기
-        owner.GetComponent<Player>().DoStop();
-
+        
         Destroy(gameObject);
     }
 

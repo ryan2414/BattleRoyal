@@ -18,6 +18,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable {
     public Image healthImage;
     public int killCount;
     public float attackCoolTime = 1.2f;
+    public string nickname;
 
     Vector3 curPos;
 
@@ -30,6 +31,9 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable {
         nickNameTxt.text = pv.IsMine ? PhotonNetwork.NickName : pv.Owner.NickName;
         nickNameTxt.color = pv.IsMine ? Color.green : Color.red;
         killCountTxt.color = pv.IsMine ? Color.green : Color.red;
+
+        nickname = PhotonNetwork.NickName;
+
         if (pv.IsMine) {
             var cm = GameObject.Find("CMCamera").GetComponent<CinemachineVirtualCamera>();
             cm.Follow = transform;
@@ -39,8 +43,8 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable {
     }
 
     void Update() {
+        killCountTxt.text = $"Kill : {killCount}";
         if (pv.IsMine) {
-            killCountTxt.text = $"Kill : {killCount}";
             curTime += Time.deltaTime;
 
             if (!isFire) {
@@ -55,6 +59,9 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable {
                 DoStop();
             }
         }
+        //isMine이 아닌 것들은 부드럽게 위치 동기화
+        else if ((transform.position - curPos).sqrMagnitude >= 100) transform.position = curPos;
+        else transform.position = Vector3.Lerp(transform.position, curPos, Time.deltaTime * 10);
     }
 
     void Move() {
@@ -91,9 +98,9 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable {
             anim.SetBool("isAttack", true);
             GameObject bullet = PhotonNetwork.Instantiate("Bullet", transform.position + new Vector3(sr.flipX ? -0.4f : 0.4f, -0.01f, 0), Quaternion.identity);
             bullet.GetComponent<PhotonView>().RPC("DirRPC", RpcTarget.All, sr.flipX ? -1 : 1);
-            bullet.GetComponent<PhotonView>().RPC("Setowner", RpcTarget.All);
+            bullet.GetComponent<PhotonView>().RPC("Setowner", RpcTarget.AllBuffered);
         }
-       
+
 
     }
 
@@ -114,19 +121,24 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable {
     }
 
     public void DoStop() {
+        pv.RPC("RPC_DoStop", RpcTarget.All);
+    }
+
+    [PunRPC]
+    private void RPC_DoStop() {
         anim.SetBool("isAttack", false);
         isFire = false;
     }
 
+
     #region PunRPC
     [PunRPC]
     void DoAttack() {
-        //anim.SetTrigger("doAttack"); 
         anim.SetBool("isAttack", true);
     }
 
     [PunRPC]
-    void KillCount() {
+    public void KillCount() {
         killCount++;
     }
 

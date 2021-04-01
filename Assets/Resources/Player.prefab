@@ -15,8 +15,8 @@ GameObject:
   - component: {fileID: 7333273143405539017}
   - component: {fileID: 6917579049012398567}
   - component: {fileID: 5706589741500342571}
-  - component: {fileID: 8362767969119270143}
   - component: {fileID: 6025351977656840383}
+  - component: {fileID: 8844882507856972137}
   m_Layer: 9
   m_Name: Player
   m_TagString: Player
@@ -147,8 +147,8 @@ MonoBehaviour:
   ObservedComponents:
   - {fileID: 6917579049012398567}
   - {fileID: 5706589741500342571}
-  - {fileID: 8362767969119270143}
-  sceneViewId: 1
+  - {fileID: 8844882507856972137}
+  sceneViewId: 2
   InstantiationId: 0
   isRuntimeInstantiated: 0
 --- !u!114 &6917579049012398567
@@ -172,15 +172,6 @@ MonoBehaviour:
   - Type: 4
     SynchronizeType: 1
     Name: isJump
-  - Type: 9
-    SynchronizeType: 0
-    Name: doAttack
-  - Type: 9
-    SynchronizeType: 0
-    Name: doTouch
-  - Type: 9
-    SynchronizeType: 0
-    Name: doDie
   - Type: 4
     SynchronizeType: 1
     Name: isAttack
@@ -203,30 +194,6 @@ MonoBehaviour:
   m_SynchronizeAngularVelocity: 0
   m_TeleportEnabled: 0
   m_TeleportIfDistanceGreaterThan: 3
---- !u!114 &8362767969119270143
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1308675516934583568}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 92e504765d60c6e40a42e20067260c4a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  pv: {fileID: 7333273143405539017}
-  nickNameTxt: {fileID: 8155492807937303619}
-  killCountTxt: {fileID: 7583654322635167988}
-  FinishKillCountTxt: {fileID: 0}
-  sr: {fileID: 1308675516934583565}
-  anim: {fileID: 6025351977656840383}
-  rig: {fileID: 1308675516934583566}
-  bulletFactory: {fileID: 7028639751483492254, guid: 82ced5f6c4af6324b8454d59713b7dbd,
-    type: 3}
-  healthImage: {fileID: 8155492807109974744}
-  killCount: 0
-  attackCoolTime: 1.2
 --- !u!95 &6025351977656840383
 Animator:
   serializedVersion: 3
@@ -246,6 +213,31 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &8844882507856972137
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1308675516934583568}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d8bb2d2f214a0184bb91ce62342c0d55, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pv: {fileID: 7333273143405539017}
+  nickNameTxt: {fileID: 8155492807937303619}
+  killCountTxt: {fileID: 7583654322635167988}
+  FinishKillCountTxt: {fileID: 0}
+  sr: {fileID: 1308675516934583565}
+  anim: {fileID: 6025351977656840383}
+  rig: {fileID: 1308675516934583566}
+  bulletFactory: {fileID: 7028639751483492254, guid: 82ced5f6c4af6324b8454d59713b7dbd,
+    type: 3}
+  healthImage: {fileID: 8155492807109974744}
+  killCount: 0
+  attackCoolTime: 1.2
+  nickname: 
 --- !u!1 &1585432292701579583
 GameObject:
   m_ObjectHideFlags: 0
@@ -325,7 +317,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: 'Kill : 00'
+  m_Text: 
 --- !u!114 &8934836694252639317
 MonoBehaviour:
   m_ObjectHideFlags: 0
